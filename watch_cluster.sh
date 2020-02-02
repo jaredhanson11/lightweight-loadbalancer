@@ -14,7 +14,7 @@ doctl kubernetes cluster kubeconfig save $DIGITALOCEAN_CLUSTER_NAME
 while true; do
     echo "$(date): Checking for new nodes."
     ips=($(kubectl get nodes --selector=kubernetes.io/role!=master -o jsonpath={.items[*].status.addresses[?\(@.type==\"ExternalIP\"\)].address}))
-    if [[ "${ips[@]}" == "${last_run[@]}" ]]; then
+    if [[ "${ips[@]}" == "${last_run[@]}" || ${#ips[@]} -eq 0 ]]; then
         echo "$(date): No new nodes."
         _sleep
         continue
@@ -24,6 +24,9 @@ while true; do
     load_balancer=$(cat <<-EOM
 [http.services]
   [http.services.ingress-controller.loadBalancer]
+    passHostHeader = true
+    [http.services.ingress-controller.loadBalancer.healthCheck]
+      path = "/healthz"
 EOM
 )
     for ip in ${ips[@]}; do
@@ -31,8 +34,6 @@ EOM
 
     [[http.services.ingress-controller.loadBalancer.servers]]
       url = "http://$ip:$INGRESS_CONTROLLER_NODE_PORT/"
-    [http.services.ingress-controller.loadBalancer.healthCheck]
-      path = "/healthz"
 EOM
 )
     done
