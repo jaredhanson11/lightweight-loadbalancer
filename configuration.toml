@@ -1,0 +1,10 @@
+[http.routers]
+	[http.routers.Route-All]
+		entryPoints = ["http", "https"]
+		rule = "PathPrefix(`/`)"
+		service = "ingress-controller"
+		middlewares = ["redirect-http"]
+
+[http.middlewares]
+  [http.middlewares.redirect-http.redirectScheme]
+    scheme = "http"
