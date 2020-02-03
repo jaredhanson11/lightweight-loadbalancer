@@ -1,0 +1,14 @@
+name: Docker Image CI
+on: [push]
+jobs:
+  docker-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build and publish docker image
+      uses: docker://jaredhanson11/cicd-tools
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+      with:
+        entrypoint: /scripts/github-workflows/push-docker-artifacts.sh
