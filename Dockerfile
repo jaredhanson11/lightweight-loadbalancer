@@ -12,4 +12,5 @@ WORKDIR /loadbalancer
 COPY ./*.sh ./
 ENV CLUSTER_POLL_DELAY=60
 ENTRYPOINT ["./entrypoint.sh"]
+EXPOSE 80 443
 CMD [ ]
