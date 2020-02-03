@@ -40,6 +40,6 @@ EOM
 
 echo "$(date): New config generated."
 echo "$load_balancer"
-echo "$load_balancer" > /dynamic-config/loadbalancer.toml
+echo "$load_balancer" > /dynamic-config/http-loadbalancer.toml
 _sleep
 done

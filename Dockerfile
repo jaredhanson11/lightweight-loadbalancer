@@ -7,10 +7,9 @@ RUN apk add curl --virtual .build-deps \
     && apk del .build-deps \
     && apk add bash \
     && chmod -R +x /usr/local/bin/kubectl \
-    && mkdir -p /dynamic-config
+    && mkdir -p /dynamic-config /logs
 WORKDIR /loadbalancer
 COPY ./*.sh ./
-COPY ./configuration.toml /dynamic-config
 ENV CLUSTER_POLL_DELAY=60
 ENTRYPOINT ["./entrypoint.sh"]
-CMD [ "--api=true", "--api.insecure=true", "--log.level=DEBUG"]
+CMD [ ]
