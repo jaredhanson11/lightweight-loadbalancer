@@ -1,10 +1,12 @@
 #! /usr/bin/env bash
 _sleep() { sleep $CLUSTER_POLL_DELAY; }
 
-if [[ -z "$INGRESS_CONTROLLER_NODE_PORT" || -z "$DIGITALOCEAN_ACCESS_TOKEN" || -z "$DIGITALOCEAN_CLUSTER_NAME" ]]; then
+if [[ -z "$RTMP_NODE_PORT" || -z "$INGRESS_CONTROLLER_NODE_PORT" || -z "$DIGITALOCEAN_ACCESS_TOKEN" || -z "$DIGITALOCEAN_CLUSTER_NAME" ]]; then
     echo "DIGITALOCEAN_ACCESS_TOKEN is required."
     echo "DIGITALOCEAN_CLUSTER_NAME is required."
     echo "INGRESS_CONTROLLER_NODE_PORT is required."
+    echo "INGRESS_CONTROLLER_NODE_PORT is required."
+    echo "RTMP_NODE_PORT is required."
     exit 1
 fi
 
@@ -34,6 +36,21 @@ EOM
 
     [[http.services.ingress-controller.loadBalancer.servers]]
       url = "http://$ip:$INGRESS_CONTROLLER_NODE_PORT/"
+EOM
+)
+    done
+
+    load_balancer+=$(cat <<-EOM
+
+[tcp.services]
+  [tcp.services.rtmp-ingress.loadBalancer]
+EOM
+)
+    for ip in ${ips[@]}; do
+        load_balancer+=$(cat <<-EOM
+
+    [[tcp.services.rtmp-ingress.loadBalancer.servers]]
+      address = "$ip:$RTMP_NODE_PORT"
 EOM
 )
     done

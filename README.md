@@ -4,7 +4,6 @@
 
 Why should I pay for a managed load balancer when I don't (at this point), need the elastic scalability or throughput provided by those managed services? All I really need from a cloud provider's managed load balancer is the static IP address as ingress to my cluster, which can easily be provided by a droplet (or ec2, etc.) instance. Then I can use my droplet for load balancing and other compute tasks, all for cheaper than the elastic load balancer provided by DO.
 
-
 This small load balancer replaces Digital Ocean's managed load balancer and exposes traffic into a kubernetes clusters.
 Lightweight load balancer will forward traffic from to an ingress-controller running inside the kuberenetes cluster.
 The lightweight load balancer will load balance all traffic to all the worker nodes in my kuberenetes cluster. It's understood that the ingress controller will be exposed from the cluster (via NodePort) at a configured port.
@@ -47,9 +46,10 @@ I run the following command on my droplet that I want to act as ingress to my ku
 I helm install the `stable/nginx-ingress` chart into the cluster `endergy-cluster-1`, ensureing that I expose my service as a NodePort and not LoadBalancer so that DO doens't auto create an ingress.
 
 ```bash
-docker run -d -it -p 443:443 -p 80:80 \
+docker run -d -it -p 443:443 -p 80:80 -p 1935:1935 \
     -v ${HOME}/.endergy-data/acme-certs/:/acme-certs/ \
     -e INGRESS_CONTROLLER_NODE_PORT=30269 \
+    -e RTMP_NODE_PORT=30268 \
     -e DIGITALOCEAN_CLUSTER_NAME=endergy-cluster-1 \
     -e CLUSTER_POLL_DELAY=300 \
     -e SUPPORTED_DOMAINS="endergy.info endergy.co" \

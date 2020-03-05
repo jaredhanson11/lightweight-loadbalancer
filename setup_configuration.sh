@@ -51,5 +51,15 @@ configuration+=$(cat <<-EOM
 EOM
 )
 done
+configuration+=$(cat <<-EOM
+
+[tcp.routers]
+  [tcp.routers.Route-${domain_dash}]
+    entryPoints = ["rtmp"]
+    rule = "HostSNI(\`*\`)"
+    service = "rtmp-ingress"
+EOM
+)
+
 echo "$configuration"
 echo "$configuration" > /dynamic-config/routers.toml
