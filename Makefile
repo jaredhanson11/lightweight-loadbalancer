@@ -5,3 +5,4 @@ build:
 	docker build . -t ${name}:latest
 push: build
 	docker push ${name}:latest
+push-images: push
