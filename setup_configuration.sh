@@ -3,6 +3,10 @@ configuration=$(cat <<-EOM
 [http.middlewares]
   [http.middlewares.https-redirect.redirectscheme]
     scheme = "https"
+  [http.middlewares.removewww-redirect.redirectregex]
+    regex = "^(https?\\://)(?:www\\.)+(.+)"
+    replacement = "${1}${2}"
+    permanent = true
   [http.middlewares.basic-auth.basicAuth]
     users = [
       "endergyAdmin:{SHA}QTuQPWM/ZZ11WLPWdAgW9jT9FM0="
@@ -32,6 +36,7 @@ configuration+=$(cat <<-EOM
   [http.routers.Route-${domain_dash}]
     entryPoints = ["https"]
     rule = "HostRegexp(\`${domain}\`, \`{subdomain:.*}.${domain}\`)"
+    middlewares = ["removewww-redirect"]
     service = "ingress-controller"
     [http.routers.Route-${domain_dash}.tls]
       certResolver = "cert-manager"
