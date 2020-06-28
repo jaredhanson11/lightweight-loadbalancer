@@ -5,7 +5,7 @@ configuration=$(cat <<-EOM
     scheme = "https"
   [http.middlewares.removewww-redirect.redirectregex]
     regex = "^(https?\\\\://)(?:www\\\\.)+(.+)"
-    replacement = "${1}${2}"
+    replacement = "\${1}\${2}"
     permanent = true
   [http.middlewares.basic-auth.basicAuth]
     users = [
