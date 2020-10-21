@@ -23,9 +23,11 @@ configuration=$(cat <<-EOM
 EOM
 )
 
-domains=(${SUPPORTED_DOMAINS[@]})
-for domain in ${domains[@]}; do
-domain_dash="${domain/\./\-}"
+function adddomain()
+{
+  local domain=$1
+  local domain_dash="${domain/\./\-}"
+  local cert_resolver=$2
 configuration+=$(cat <<-EOM
 
   [http.routers.Route-${domain_dash}-insecure]
@@ -39,7 +41,7 @@ configuration+=$(cat <<-EOM
     middlewares = ["removewww-redirect"]
     service = "ingress-controller"
     [http.routers.Route-${domain_dash}.tls]
-      certResolver = "cert-manager"
+      certResolver = "${cert_resolver}"
       [[http.routers.Route-${domain_dash}.tls.domains]]
         main = "${domain}"
         sans = ["*.${domain}"]
@@ -50,21 +52,23 @@ configuration+=$(cat <<-EOM
     middlewares = ["basic-auth"]
     priority = 1000
     [http.routers.Route-${domain_dash}-dashboard.tls]
-      certResolver = "cert-manager"
+      certResolver = "${cert_resolver}"
       [[http.routers.Route-${domain_dash}-dashboard.tls.domains]]
         main = "dashboard.${domain}"
 EOM
 )
-done
-configuration+=$(cat <<-EOM
 
-[tcp.routers]
-  [tcp.routers.Route-${domain_dash}]
-    entryPoints = ["rtmp"]
-    rule = "HostSNI(\`*\`)"
-    service = "rtmp-ingress"
-EOM
-)
+}
+
+godaddy_domains=(${GODADDY_SUPPORTED_DOMAINS[@]})
+for godaddy_domain in ${godaddy_domains[@]}; do
+  adddomain $godaddy_domain "godaddy-cert-manager"
+done
+
+namecheap_domains=(${NAMECHEAP_SUPPORTED_DOMAINS[@]})
+for namecheap_domain in ${namecheap_domains[@]}; do
+  adddomain $namecheap_domain "namecheap-cert-manager"
+done
 
 echo "$configuration"
 echo "$configuration" > /dynamic-config/routers.toml

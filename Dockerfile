@@ -11,6 +11,15 @@ RUN apk add curl --virtual .build-deps \
 WORKDIR /loadbalancer
 COPY ./*.sh ./
 ENV CLUSTER_POLL_DELAY=60
+
+# See: https://doc.traefik.io/traefik/v2.0/https/acme/#dnschallenge for these additional config options
+# These params helped fix DNS caching issues causing LetsEncrypt to fail
+# See: https://community.traefik.io/t/dnschallenge-sporadically-failing-txt-record-invalid/5543/2 for explanation
+ENV GODADDY_POLLING_INTERVAL=30
+ENV GODADDY_PROPAGATION_TIMEOUT=1200
+ENV NAMECHEAP_POLLING_INTERVAL=30
+ENV NAMECHEAP_PROPAGATION_TIMEOUT=1200
+
 ENTRYPOINT ["./entrypoint.sh"]
 EXPOSE 80 443
 CMD [ ]

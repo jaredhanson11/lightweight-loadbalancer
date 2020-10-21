@@ -9,9 +9,13 @@ default_args=\
 --entrypoints.http.address=:80 \
 --entrypoints.https.address=:443 \
 --entrypoints.rtmp.address=:1935 \
---certificatesresolvers.cert-manager.acme.dnschallenge=true \
---certificatesresolvers.cert-manager.acme.dnschallenge.provider=godaddy \
---certificatesresolvers.cert-manager.acme.email=${LETS_ENCRYPT_EMAIL} \
---certificatesresolvers.cert-manager.acme.storage=/acme-certs/acme.json \
+--certificatesresolvers.godaddy-cert-manager.acme.dnschallenge=true \
+--certificatesresolvers.godaddy-cert-manager.acme.dnschallenge.provider=godaddy \
+--certificatesresolvers.godaddy-cert-manager.acme.email=${LETS_ENCRYPT_EMAIL} \
+--certificatesresolvers.godaddy-cert-manager.acme.storage=/acme-certs/acme.json \
+--certificatesresolvers.namecheap-cert-manager.acme.dnschallenge=true \
+--certificatesresolvers.namecheap-cert-manager.acme.dnschallenge.provider=namecheap \
+--certificatesresolvers.namecheap-cert-manager.acme.email=${LETS_ENCRYPT_EMAIL} \
+--certificatesresolvers.namecheap-cert-manager.acme.storage=/acme-certs/namecheap-acme.json \
 --accesslog.filepath=/logs/access.log"
 traefik $default_args $@

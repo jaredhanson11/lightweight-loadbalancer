@@ -18,7 +18,8 @@ Currently these are all required. Work should be done to make many of these opti
 ### Domains ###
 # Domains to route to K8s ingress
 # Note, all subdomains (ie. *.example.com) are routed by default
-SUPPORTED_DOMAINS=<space separated list>
+GODADDY_SUPPORTED_DOMAINS=<space separated list>
+NAMECHEAP_SUPPORTED_DOMAINS=<space separated list>
 
 ### Cluster info ###
 # NodePort that ingress controller is running in cluster
@@ -35,6 +36,9 @@ LETS_ENCRYPT_EMAIL=<email>
 # Used for dnschallenge to get SSL certs
 GODADDY_API_KEY=<key>
 GODADDY_API_SECRET=<secret>
+# Used for dnschallenge to get SSL certs
+NAMECHEAP_API_USER=<username>
+NAMECHEAP_API_KEY=<secret>
 ```
 
 ## Sample Usage
@@ -52,7 +56,8 @@ docker run -d -it -p 443:443 -p 80:80 -p 1935:1935 \
     -e RTMP_NODE_PORT=30268 \
     -e DIGITALOCEAN_CLUSTER_NAME=endergy-cluster-1 \
     -e CLUSTER_POLL_DELAY=300 \
-    -e SUPPORTED_DOMAINS="endergy.info endergy.co" \
+    -e GODADDY_SUPPORTED_DOMAINS="endergy.info endergy.co" \
+    -e NAMECHEAP_SUPPORTED_DOMAINS="rep.so" \
     -e DIGITALOCEAN_ACCESS_TOKEN=$DO_ACCESS_TOKEN \
     -e GODADDY_API_KEY=$GODADDY_API_KEY \
     -e GODADDY_API_SECRET=$GODADDY_API_SECRET \
